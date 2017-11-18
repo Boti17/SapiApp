@@ -30,7 +30,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddAdvertiser" />
-        <activity android:name=".ListScreen"></activity>
+        <activity android:name=".ListScreen" />
+        <activity android:name=".AdvertiserDetails" />
+        <activity android:name=".FullScreenImage">
+        </activity>
     </application>
 
 </manifest>
