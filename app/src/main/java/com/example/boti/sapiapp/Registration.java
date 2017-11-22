@@ -90,12 +90,12 @@ public class Registration extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startSignIn();
+                startSignUp();
             }
         });
     }
 
-    private void startSignIn()
+    private void startSignUp()
     {
         final String name = userNameField.getText().toString();
         final String email = emailField.getText().toString();
