@@ -14,7 +14,9 @@ public class MainActivity extends AppCompatActivity {
 
         /*Intent i = new Intent(this,AddAdvertiser.class);
         startActivity(i);*/
-        Intent i = new Intent(this,ListScreen.class);
+        /*Intent i = new Intent(this,ListScreen.class);
+        startActivity(i);*/
+        Intent i = new Intent(this,Registration.class);
         startActivity(i);
     }
 }
