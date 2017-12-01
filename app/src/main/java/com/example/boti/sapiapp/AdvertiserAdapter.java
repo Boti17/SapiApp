@@ -2,16 +2,12 @@ package com.example.boti.sapiapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -62,10 +58,11 @@ public class AdvertiserAdapter extends RecyclerView.Adapter<AdvertiserAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Advertiser item = items.get(position);
         holder.title.setText(item.getTitle());
-        Glide.with(context).load(item.getPhotos().get(0)).into(holder.image);
+        String image = item.getPhotos().get(0);
+        GlideApp.with(context).load(image).into(holder.image);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

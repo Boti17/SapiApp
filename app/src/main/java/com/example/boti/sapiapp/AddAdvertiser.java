@@ -1,22 +1,17 @@
 package com.example.boti.sapiapp;
 
-import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -35,15 +30,16 @@ public class AddAdvertiser extends AppCompatActivity {
     private Uri imageUri;
     private StorageReference mStorage;
     private Context context = this;
-    private ArrayList<String> photoUris;
+    private ArrayList<Uri> photoUris;
     private ArrayList<String> photoNames;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_advertiser);
 
-        photoUris= new ArrayList<String>();
+        photoUris= new ArrayList<Uri>();
         photoNames = new ArrayList<String>();
 
         mRootRef = new Firebase("https://sapiapp-5a8e2.firebaseio.com/Advertisers");
@@ -52,6 +48,7 @@ public class AddAdvertiser extends AppCompatActivity {
         mDescription = (EditText) findViewById(R.id.descriptionEt);
         mSend = (Button) findViewById(R.id.sendButton);
         mImages = (Button) findViewById(R.id.imageButton);
+        mProgress = new ProgressDialog(this);
 
         mImages.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +78,8 @@ public class AddAdvertiser extends AppCompatActivity {
                     Toast.makeText(context,"Please select an image",Toast.LENGTH_LONG).show();
                     return;
                 }
+                mProgress.setMessage("Sending datas...");
+                mProgress.show();
                 Long timestamp = System.currentTimeMillis()/1000;
                 String ts = timestamp.toString();
                 Firebase mRefAdvertiser = mRootRef.child(ts);
@@ -91,10 +90,10 @@ public class AddAdvertiser extends AppCompatActivity {
                 mRefChild = mRefAdvertiser.child("Photos");
                 for (int i=0; i<photoUris.size(); ++i)
                 {
-                    String uri = photoUris.get(i);
+                    Uri uri = photoUris.get(i);
                     String name = photoNames.get(i);
                     Firebase mRefPhotos = mRefChild.child(name);
-                    mRefPhotos.setValue(uri);
+                    mRefPhotos.setValue(uri.toString());
                 }
                 finish();
             }
@@ -109,12 +108,17 @@ public class AddAdvertiser extends AppCompatActivity {
         {
             imageUri=data.getData();
             StorageReference filepath = mStorage.child("Photos").child(imageUri.getLastPathSegment());
-            filepath.putFile(imageUri);
+            filepath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    photoUris.add(downloadUrl);
+                }
+            });
             Toast.makeText(context,"Photo added",Toast.LENGTH_LONG).show();
-            String photoUri = imageUri.toString();
             String photoName = filepath.getName().toString();
-            photoUris.add(photoUri);
             photoNames.add(photoName);
+            mProgress.dismiss();
         }
     }
 }

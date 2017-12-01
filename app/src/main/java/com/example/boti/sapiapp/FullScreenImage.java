@@ -1,13 +1,10 @@
 package com.example.boti.sapiapp;
 
 import android.content.Intent;
-import android.media.Image;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
 
 public class FullScreenImage extends AppCompatActivity {
 
@@ -21,6 +18,6 @@ public class FullScreenImage extends AppCompatActivity {
         Intent intent = getIntent();
         String image = intent.getStringExtra("image");
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
-        Glide.with(this).load(image).into(imageView);
+        GlideApp.with(this).load(image).into(imageView);
     }
 }
