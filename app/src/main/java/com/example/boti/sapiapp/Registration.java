@@ -31,7 +31,7 @@ public class Registration extends AppCompatActivity {
     private Button signUpButton;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private ProgressDialog mProgrss;
+    private ProgressDialog mProgress;
     private Firebase mRootRef;
     private Context context = this;
     private Button addImageButton;
@@ -49,7 +49,7 @@ public class Registration extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        mProgrss = new ProgressDialog(this);
+        mProgress = new ProgressDialog(this);
 
         mRootRef = new Firebase("https://sapiapp-5a8e2.firebaseio.com/Users");
 
@@ -106,8 +106,8 @@ public class Registration extends AppCompatActivity {
         else
         {
             if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                mProgrss.setMessage("Signing up...");
-                mProgrss.show();
+                mProgress.setMessage("Signing up...");
+                mProgress.show();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -116,7 +116,7 @@ public class Registration extends AppCompatActivity {
                             Firebase mChild = mRootRef.child(user_id);
                             mChild.child("name").setValue(name);
                             mChild.child("picture").setValue(imageUriString);
-                            mProgrss.dismiss();
+                            mProgress.dismiss();
                             startActivity(new Intent(context, ListScreen.class));
                         }
                     }

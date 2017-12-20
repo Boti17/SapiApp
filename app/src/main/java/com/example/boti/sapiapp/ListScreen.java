@@ -1,8 +1,10 @@
 package com.example.boti.sapiapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -22,12 +24,18 @@ public class ListScreen extends AppCompatActivity {
     private ArrayList<String> photos;
     private Advertiser advertiser;
     private Context context = this;
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_screen);
 
+        new LongOperation().execute("");
+    }
+
+    public void setUpRecyclerView()
+    {
         advertisers = new ArrayList<Advertiser>();
 
         DatabaseReference mDatabase;
@@ -82,5 +90,29 @@ public class ListScreen extends AppCompatActivity {
         AdvertiserAdapter adapter = new AdvertiserAdapter(context,advertisers);
         recyclerView.setAdapter(adapter);
 
+    }
+
+    private class LongOperation extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            setUpRecyclerView();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mProgress.dismiss();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgress = new ProgressDialog(context);
+            mProgress.setMessage("Loading advertisers...");
+            mProgress.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 }
